@@ -18,7 +18,22 @@ namespace Msit155Site.Controllers
             return View();
         }
 
+        public IActionResult First()
+        {
+            return View();
+        }
+
         public IActionResult JsonTest()
+        {
+            return View();
+        }
+
+        public IActionResult Register() 
+        {
+            return View();
+        }
+
+        public IActionResult Avatar()
         {
             return View();
         }
@@ -32,6 +47,11 @@ namespace Msit155Site.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Address()
+        {
+            return View();
         }
     }
 }

@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "Address";
+}
+
+<h1>Address</h1>
+<select id="selectCity">
+    <option value="-1">--請選擇--</option>
+</select>
+<select id="selectDistrict">
+    <option value="-1">--請選擇--</option>
+</select>
+<select id="selectRoad">
+    <option value="-1">--請選擇--</option>
+</select>
+
+@section Scripts {
+
+    <script>
+        const selCity = document.querySelector('#selectCity');
+        const selDistrict = document.querySelector('#selectDistrict');
+        const selRoad = document.querySelector('#selectRoad');
+
+        (async () => {
+            const Url = '@Url.Content("~/api/cities")';
+            const response = await fetch('@Url.Content("~/Api/Cities")');
+            const datas = await response.json();
+            // console.log(datas);
+
+            const optCity = datas.map(city => {
+                return `<option value="${city}">${city}</option>`
+            });
+
+
+            //以下簡寫
+            // const optCity = datas.map(city => `<option value="${city}">${city}</option>`);
+
+            selCity.innerHTML = optCity.join("");
+            await loadDistrict();
+            await loadRoad();
+
+        })();
+
+
+        const loadDistrict = async () => {
+            //讀取城市 改變鄉政區
+            const city = selCity.options[selCity.selectedIndex].value;
+
+            const Url = `@Url.Content("~/api/district")?city=${city}`;
+            const response = await fetch(Url);
+            const datas = await response.json();
+            // console.log(datas);
+
+            const optDistrict = datas.map(district => {
+                return `<option value="${district}">${district}</option>`
+            });
+            selDistrict.innerHTML = optDistrict;
+
+
+            //讀取鄉政區  改變路名
+            const district = selDistrict.options[selDistrict.selectedIndex].value;
+
+            const Url2 = `@Url.Content("~/api/road")?site_id=${district}`;
+            // const Url = `@Url.Content("~/api/road")?site_id=臺北市士林區`;
+            const response2 = await fetch(Url2);
+            const datas2 = await response2.json();
+            // console.log(datas);
+
+            const optRoad = datas2.map(road => {
+                return `<option value="${road}">${road}</option>`
+            });
+            selRoad.innerHTML = optRoad;
+
+        };
+        selCity.addEventListener('change', loadDistrict);
+
+
+        //剛進畫面讀取城市及鄉政區而得到的路名
+        const loadRoad = async () => {
+
+            const district = selDistrict.options[selDistrict.selectedIndex].value;
+
+            const Url = `@Url.Content("~/api/road")?site_id=${district}`;
+            // const Url = `@Url.Content("~/api/road")?site_id=臺北市士林區`;
+            const response = await fetch(Url);
+            const datas = await response.json();
+            // console.log(datas);
+
+            const optRoad = datas.map(road => {
+                return `<option value="${road}">${road}</option>`
+            });
+            selRoad.innerHTML = optRoad;
+        };
+
+
+        selDistrict.addEventListener('change', loadRoad);
+
+
+    </script>
+
+}
